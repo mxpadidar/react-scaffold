@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Colors palette */
+:root {
+    --dark-color: #161616;
+    --light-color: #ECDBBA;
+    --primary-color: #346751;
+    --accent-color: #C84B31;
+}
+
+.bg-dark {
+    background-color: var(--dark-color);
+}
+
+.text-dark {
+    color: var(--dark-color);
+}
+
+.bg-light {
+    background-color: var(--light-color);
+}
+
+.text-light {
+    color: var(--light-color);
+}
+
+.bg-primary {
+    background-color: var(--primary-color);
+}
+
+.text-primary {
+    color: var(--primary-color);
+}
+
+.bg-accent {
+    background-color: var(--accent-color);
+}
+
+.text-accent {
+    color: var(--accent-color);
+}
+
+body {
+    font-family: "SUSE", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    background-color: var(--dark-color);
+    color: var(--light-color);
+}
