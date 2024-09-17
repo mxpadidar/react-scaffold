@@ -45,6 +45,36 @@
     color: var(--accent-color);
 }
 
+.form-group {
+    display: grid;
+    margin-bottom: 1rem;
+}
+
+.form-group input {
+    padding-inline: 0.5rem;
+    padding-block: 0.2rem;
+    color: var(--dark-color);
+}
+
+.form-group input:focus {
+    outline: none;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--light-color);
+    margin-bottom: 0.2rem;
+}
+
+.submit-btn {
+    padding-inline: 1.5rem;
+    padding-block: 0.2rem;
+    background-color: var(--primary-color);
+    color: var(--dark-color);
+    border: var(--accent-color);
+    cursor: pointer;
+}
+
 body {
     font-family: "SUSE", sans-serif;
     font-optical-sizing: auto;
