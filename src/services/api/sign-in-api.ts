@@ -8,13 +8,17 @@ interface ApiCallbacks {
   errorFn: (error: unknown, variables: AuthCredentials) => void;
 }
 
-const useLoginApi = ({ successFn, errorFn }: ApiCallbacks) => {
+const useSignInApi = ({ successFn, errorFn }: ApiCallbacks) => {
   const mutation = useMutation({
     mutationFn: async (data: AuthCredentials) => {
-      const response = await axiosInstance.post("/accounts/auth/token", {
-        ...data,
-      });
-      return response.data;
+      const {
+        data: { access_token, refresh_token, token_type },
+      } = await axiosInstance.post("/accounts/auth/token", data);
+      return {
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        tokenType: token_type,
+      };
     },
     onSuccess: (data: Token) => successFn(data),
     onError: (error, variables) => errorFn(error, variables as AuthCredentials),
@@ -22,4 +26,4 @@ const useLoginApi = ({ successFn, errorFn }: ApiCallbacks) => {
   return mutation;
 };
 
-export default useLoginApi;
+export default useSignInApi;

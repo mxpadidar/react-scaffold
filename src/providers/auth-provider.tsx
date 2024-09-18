@@ -1,14 +1,15 @@
-import useLoginApi from "@/services/api/login-api";
+import useGetUserMeApi from "@/services/api/get-user-me-api";
+import useSignInApi from "@/services/api/sign-in-api";
 import { removeTokenCookie, setTokenCookie } from "@/services/token-service";
 import AuthCredentials from "@/types/auth-cred";
 import User from "@/types/user";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export interface AuthContextType {
-  isAuthenticated: boolean;
-  user: User | undefined;
-  login: (data: AuthCredentials) => void;
-  logout: () => void;
+  user?: User;
+  signedIn: boolean;
+  signIn: (data: AuthCredentials) => void;
+  signOut: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -17,30 +18,36 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [signedIn, setSignedIn] = useState<boolean>(false);
 
-  const loginMutation = useLoginApi({
+  const loginMutation = useSignInApi({
     successFn: (data) => {
       setTokenCookie(data);
-      setIsAuthenticated(true);
+      setSignedIn(true);
     },
-    errorFn: (error) => {
-      console.error(error);
-    },
+    errorFn: (error) => console.error(error),
   });
 
-  const login = (data: AuthCredentials) => {
+  const userData = useGetUserMeApi();
+
+  useEffect(() => {
+    if (userData) {
+      setUser(userData);
+    }
+  }, [signedIn, userData]);
+
+  const signIn = (data: AuthCredentials) => {
     loginMutation.mutate(data);
   };
 
-  const logout = () => {
-    setUser(undefined);
-    setIsAuthenticated(false);
+  const signOut = () => {
     removeTokenCookie();
+    setSignedIn(false);
+    setUser(undefined);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ signedIn, user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

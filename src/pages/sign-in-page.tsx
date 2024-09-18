@@ -9,19 +9,19 @@ type SignInForm = {
 };
 
 const SignInPage = () => {
-  const { isAuthenticated, login } = useAuth();
+  const { signedIn, signIn: login } = useAuth();
 
   const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm<SignInForm>({
-    defaultValues: { email: "email@example.com", password: "password" },
+    defaultValues: { email: "user@example.com", password: "string" },
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
+    if (signedIn) {
+      navigate("/profile");
     }
-  }, [isAuthenticated, navigate]);
+  }, [signedIn, navigate]);
 
   return (
     <div className="mx-auto w-96">
