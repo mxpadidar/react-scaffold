@@ -1,8 +1,12 @@
-type User = {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-};
+import { z } from "zod";
 
-export default User;
+export const userSchema = z.object({
+  id: z.number(),
+  email: z.string().email(),
+  firstName: z.string(),
+  lastName: z.string(),
+  isActive: z.boolean(),
+  registeredAt: z.date(),
+});
+
+export type User = z.infer<typeof userSchema>;

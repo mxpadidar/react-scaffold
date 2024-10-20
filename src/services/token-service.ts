@@ -1,35 +1,19 @@
-import { DOMAIN } from "@/settings";
-import Token from "@/types/token";
+import { Token } from "@/types/token";
 
-import Cookies from "js-cookie";
-
-export const setTokenCookie = (token: Token) => {
-  const jsonToken = JSON.stringify(token);
-  Cookies.set("token", jsonToken, {
-    expires: 1 / 24,
-    domain: DOMAIN,
-    sameSite: "None",
-    secure: true,
-  });
+export const saveToken = (token: Token): void => {
+  localStorage.setItem("accessToken", token.accessToken);
+  localStorage.setItem("refreshToken", token.refreshToken);
 };
 
-export const getTokenCookie = (): Token | null => {
-  const token = Cookies.get("token");
-  if (token) {
-    try {
-      return JSON.parse(token);
-    } catch (error) {
-      console.error("Failed to parse token from cookies:", error);
-      return null;
-    }
-  }
-  return null;
+export const clearToken = (): void => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
 };
 
-export const removeTokenCookie = () => {
-  Cookies.remove("token", {
-    domain: DOMAIN,
-    sameSite: "None",
-    secure: true,
-  });
+export const getAccessToken = (): string | undefined => {
+  return localStorage.getItem("accessToken") || undefined;
+};
+
+export const getRefreshToken = (): string | undefined => {
+  return localStorage.getItem("refreshToken") || undefined;
 };

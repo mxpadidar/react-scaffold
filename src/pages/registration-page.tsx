@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 
-type SignUpForm = {
+type RegistrationForm = {
   email: string;
   password: string;
   password_confirm: string;
 };
 
-const SignUpPage = () => {
-  const { register, handleSubmit } = useForm<SignUpForm>({
+const RegistrationPage = () => {
+  const { register, handleSubmit } = useForm<RegistrationForm>({
     defaultValues: {
       email: "user@example.com",
       password: "password",
@@ -15,13 +15,13 @@ const SignUpPage = () => {
     },
   });
 
-  const signUp = (data: SignUpForm) => {
+  const onSubmit = (data: RegistrationForm) => {
     console.log(data);
   };
 
   return (
     <div className="mx-auto w-96">
-      <form onSubmit={handleSubmit((data) => signUp(data))}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-group">
           <label htmlFor="email">email:</label>
           <input type="email" {...register("email")} />
@@ -42,4 +42,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default RegistrationPage;

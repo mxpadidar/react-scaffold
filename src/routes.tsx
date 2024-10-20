@@ -2,9 +2,11 @@ import BaseLayout from "@/components/ui/base-layout";
 import HomePage from "@/pages/home-page";
 import NotFoundPage from "@/pages/not-found-page";
 import ProfilePage from "@/pages/profile-page";
-import SignInPage from "@/pages/sign-in-page";
-import SignUpPage from "@/pages/sign-up-page";
+import RegistrationPage from "@/pages/registration-page";
 import { createBrowserRouter } from "react-router-dom";
+import ProtectedRoute from "./components/protected-route";
+import LoginPage from "./pages/login-page";
+import UpdateUserMePage from "./pages/update-user-me-page";
 
 const router = createBrowserRouter([
   {
@@ -18,15 +20,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <ProfilePage />,
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "/sign-in",
-        element: <SignInPage />,
+        path: "/profile/update",
+        element: (
+          <ProtectedRoute>
+            <UpdateUserMePage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "/sign-up",
-        element: <SignUpPage />,
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegistrationPage />,
       },
     ],
   },

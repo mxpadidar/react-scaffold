@@ -1,7 +1,9 @@
-type Token = {
-  accessToken: string;
-  refreshToken: string;
-  tokenType: string;
-};
+import { z } from "zod";
 
-export default Token;
+export const tokenSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  tokenType: z.string(),
+});
+
+export type Token = z.infer<typeof tokenSchema>;

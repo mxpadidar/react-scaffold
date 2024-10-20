@@ -1,30 +1,31 @@
 import useAuth from "@/hooks/use-auth";
-import { APP_NAME } from "@/settings";
+import settings from "@/utils/settings";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const { signOut, signedIn } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignOut = () => {
-    signOut();
-    navigate("/sign-in");
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (
     <nav className="flex container mx-auto items-center h-24 justify-between">
       <div className="flex gap-4">
-        <Link to="/">{APP_NAME}</Link>
+        <Link to="/">{settings.APP_NAME}</Link>
         <Link to="/">Home</Link>
-        {signedIn && <Link to="/profile">Profile</Link>}
+        {isAuthenticated && <Link to="/profile">Profile</Link>}
+        {isAuthenticated && <Link to="/profile/update">Update Profile</Link>}
       </div>
 
-      {signedIn ? (
-        <button onClick={handleSignOut}>Sign Out</button>
+      {isAuthenticated ? (
+        <button onClick={handleLogout}>Logout</button>
       ) : (
         <div className="flex gap-4">
-          <Link to="/sign-in">Sign In</Link>
-          <Link to="/sign-up">Sign Up</Link>
+          <Link to="/login">Login</Link>
+          <Link to="/register">Register</Link>
         </div>
       )}
     </nav>

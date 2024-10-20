@@ -1,15 +1,18 @@
-import useGetUserMeApi from "@/services/api/get-user-me-api";
-import useSignInApi from "@/services/api/sign-in-api";
-import { removeTokenCookie, setTokenCookie } from "@/services/token-service";
+import useLoginMutation from "@/services/api/login-mutation";
+import {
+  clearToken,
+  getAccessToken,
+  saveToken,
+} from "@/services/token-service";
 import AuthCredentials from "@/types/auth-cred";
-import User from "@/types/user";
-import { createContext, useEffect, useState } from "react";
+import { tokenSchema } from "@/types/token";
+import { useQueryClient } from "@tanstack/react-query";
+import { createContext, useState } from "react";
 
 export interface AuthContextType {
-  user?: User;
-  signedIn: boolean;
-  signIn: (data: AuthCredentials) => void;
-  signOut: () => void;
+  isAuthenticated: boolean;
+  login: (credentials: AuthCredentials) => void;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -17,37 +20,36 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | undefined>(undefined);
-  const [signedIn, setSignedIn] = useState<boolean>(false);
+  const accessToken = getAccessToken();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!accessToken
+  );
 
-  const loginMutation = useSignInApi({
-    successFn: (data) => {
-      setTokenCookie(data);
-      setSignedIn(true);
+  const queryClient = useQueryClient();
+
+  const loginMutation = useLoginMutation({
+    successFn: (response) => {
+      const token = tokenSchema.parse({
+        accessToken: response.data.access_token,
+        refreshToken: response.data.refresh_token,
+        tokenType: response.data.token_type,
+      });
+      saveToken(token);
+      setIsAuthenticated(true);
     },
-    errorFn: (error) => console.error(error),
+    errorFn: (error) => console.error("login error", error),
   });
 
-  const userData = useGetUserMeApi();
+  const login = (data: AuthCredentials) => loginMutation.mutate(data);
 
-  useEffect(() => {
-    if (userData) {
-      setUser(userData);
-    }
-  }, [signedIn, userData]);
-
-  const signIn = (data: AuthCredentials) => {
-    loginMutation.mutate(data);
-  };
-
-  const signOut = () => {
-    removeTokenCookie();
-    setSignedIn(false);
-    setUser(undefined);
+  const logout = () => {
+    clearToken();
+    setIsAuthenticated(false);
+    queryClient.clear();
   };
 
   return (
-    <AuthContext.Provider value={{ signedIn, user, signIn, signOut }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
